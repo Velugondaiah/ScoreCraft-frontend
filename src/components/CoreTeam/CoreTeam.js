@@ -13,7 +13,7 @@ const CoreTeam = () => {
     const fetchCoreMembers = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/core-members');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/core-members`);
         setCoreMembers(response.data);
         setLoading(false);
       } catch (err) {

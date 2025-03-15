@@ -9,11 +9,13 @@ function Admin({ setIsLoggedIn }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
+ 
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admin-login', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/admin-login`, {
         username,
         password,
       });
@@ -22,6 +24,7 @@ function Admin({ setIsLoggedIn }) {
       Cookies.set('jwt', response.data.token);
       setIsLoggedIn(true);
     } catch (error) {
+      console.error('Login error:', error); // Debugging line
       setMessage(error.response?.data?.error || 'An error occurred');
     }
   };

@@ -22,7 +22,7 @@ function UpcomingEvents({ isLoggedIn }) {
     const fetchUpcomingEvents = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/upcoming-events');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`);
         setUpcomingEvents(response.data);
         setLoading(false);
       } catch (err) {
@@ -38,9 +38,9 @@ function UpcomingEvents({ isLoggedIn }) {
   useEffect(() => {
     const moveCompletedEvents = async () => {
       try {
-        await axios.post('http://localhost:5000/api/move-completed-events');
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/move-completed-events`);
         // Refresh the list of upcoming events
-        const response = await axios.get('http://localhost:5000/api/upcoming-events');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`);
         setUpcomingEvents(response.data);
       } catch (err) {
         console.error('Error moving completed events:', err);
@@ -59,7 +59,7 @@ function UpcomingEvents({ isLoggedIn }) {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/upcoming-events', newEvent);
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`, newEvent);
       setUpcomingEvents([...upcomingEvents, newEvent]);
       setNewEvent({ heading: '', description: '', image: '', date: '' });
     } catch (err) {
@@ -80,7 +80,7 @@ function UpcomingEvents({ isLoggedIn }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/upcoming-events/${selectedEventId}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events/${selectedEventId}`);
       setUpcomingEvents(upcomingEvents.filter(event => event.id !== selectedEventId));
       closeModal();
     } catch (err) {

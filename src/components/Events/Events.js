@@ -16,7 +16,7 @@ function Events({ isLoggedIn }) {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/events');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
         setEvents(response.data);
         setLoading(false);
       } catch (err) {
@@ -32,9 +32,9 @@ function Events({ isLoggedIn }) {
   useEffect(() => {
     const moveCompletedEvents = async () => {
       try {
-        await axios.post('http://localhost:5000/api/move-completed-events');
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/move-completed-events`);
         // Refresh the list of events
-        const response = await axios.get('http://localhost:5000/api/events');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
         setEvents(response.data);
       } catch (err) {
         console.error('Error moving completed events:', err);
@@ -57,7 +57,7 @@ function Events({ isLoggedIn }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/events/${selectedEventId}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/events/${selectedEventId}`);
       setEvents(events.filter(event => event.id !== selectedEventId));
       closeModal();
     } catch (err) {

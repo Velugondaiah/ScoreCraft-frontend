@@ -13,7 +13,7 @@ function Mentors() {
     const fetchMentors = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5000/api/mentors');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/mentors`);
         setMentors(response.data);
         setLoading(false);
       } catch (err) {
