@@ -17,6 +17,7 @@ function UpcomingEvents({ isLoggedIn }) {
     image: '',
     date: ''
   });
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchUpcomingEvents = async () => {
@@ -56,24 +57,88 @@ function UpcomingEvents({ isLoggedIn }) {
     setNewEvent({ ...newEvent, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      
+      // Create a temporary URL for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Just set the file object for now, we'll upload when form is submitted
+        console.log("File selected and ready for upload");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddEvent = async (e) => {
     e.preventDefault();
     const eventDate = new Date(newEvent.date);
     const now = new Date();
 
-    // Compare only the date part
     if (eventDate.setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)) {
       alert('You cannot add an event with a past date. Please select a future date.');
       return;
     }
 
+    if (!selectedImage) {
+      setError('Please select an image');
+      return;
+    }
+
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`, newEvent);
-      setUpcomingEvents([...upcomingEvents, newEvent]);
+      // Upload image first
+      const formData = new FormData();
+      formData.append('file', selectedImage);
+      formData.append('upload_preset', 'ml_default'); // Make sure this exists in Cloudinary
+
+      console.log('Uploading image to Cloudinary...');
+      console.log('File name:', selectedImage.name);
+      console.log('File size:', selectedImage.size);
+      console.log('Upload preset:', 'ml_default');
+      
+      // Use fetch instead of axios for better error handling
+      const uploadResponse = await fetch(
+        'https://api.cloudinary.com/v1_1/dbroxheos/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      
+      const responseText = await uploadResponse.text();
+      console.log('Raw response:', responseText);
+      
+      if (!uploadResponse.ok) {
+        let errorDetail;
+        try {
+          errorDetail = JSON.parse(responseText).error?.message || 'Unknown error';
+        } catch (e) {
+          errorDetail = responseText || 'No error details available';
+        }
+        throw new Error(`Upload failed with status: ${uploadResponse.status}. Details: ${errorDetail}`);
+      }
+      
+      const uploadData = JSON.parse(responseText);
+      const imageUrl = uploadData.secure_url;
+      
+      console.log('Image uploaded successfully:', imageUrl);
+      
+      // Now submit the form with the image URL
+      const eventData = {
+        ...newEvent,
+        image: imageUrl
+      };
+      
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`, eventData);
+      setUpcomingEvents([...upcomingEvents, eventData]);
       setNewEvent({ heading: '', description: '', image: '', date: '' });
+      setSelectedImage(null);
+      setError(null);
     } catch (err) {
-      console.error('Error adding event:', err);
-      setError('Failed to add event');
+      console.error('Error in submission:', err);
+      setError(`Failed to process: ${err.message}`);
     }
   };
 
@@ -135,14 +200,20 @@ function UpcomingEvents({ isLoggedIn }) {
               onChange={handleInputChange}
               required
             />
-            <input
-              type="text"
-              name="image"
-              placeholder="Event Image URL"
-              value={newEvent.image}
-              onChange={handleInputChange}
-              required
-            />
+            <div className="image-upload-container">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image-input"
+                required
+              />
+              {selectedImage && (
+                <div className="image-preview">
+                  <img src={URL.createObjectURL(selectedImage)} alt="Preview" />
+                </div>
+              )}
+            </div>
             <input
               type="date"
               name="date"
