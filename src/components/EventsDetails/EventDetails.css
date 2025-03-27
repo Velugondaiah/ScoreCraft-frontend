@@ -6,12 +6,41 @@
   display: flex;
   flex-direction: column;
   max-width: 300px;
-  margin:13px;
-  padding: 0px;
-  height: 500px;
-  margin-bottom: 30px;
+  margin: 13px;
+  align-items: space-between;
   padding: 10px;
+  margin-bottom: 5px;
+  min-height: 500px; /* Fixed height for the card */
+  max-height: 500px; /* Fixed height for the card */
+  overflow: auto; /* Hide overflow by default */
+}
+.time-remaining-text{
+  color: #28a745; /* Green color for live events */
+  font-weight: bold;
+  animation: pulse 1s infinite;
+  margin-top: 10px;
+  background-color: transparent;
  
+}
+.remaining-time{
+  color: #ff0000; /* Green color for live events */
+  font-weight: bold;
+  animation: pulse 1s infinite;
+  margin-top: 10px;
+  background-color: transparent;
+}
+.live-indicator{
+  color: #28a745; /* Green color for live events */
+  font-weight: bold;
+  animation: pulse 1s infinite;
+  margin-top: 10px;
+}
+.read-more-button{
+  margin-top: 10px;
+  text-align: bottom;
+}
+.event-card.expanded {
+  overflow: visible; /* Keep overflow hidden for the card itself */
 }
 
 .event-card:hover {
@@ -20,9 +49,9 @@
 
 .event-image-container {
   position: relative;
-  height: 300px;
+  height: 440px;
   background-color: #f9f9f9;
-  
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,11 +97,9 @@
   margin-bottom: 10px;
   color: #333;
 }
-.event-card-container{
-    min-height: 499px;
-    max-height: 500px;
-    overflow :auto;
-   
+
+.event-card-container {
+  overflow: visible; /* Remove scrolling */
 }
 
 .event-description {
@@ -80,6 +107,14 @@
   color: #555;
   line-height: 1.6;
   width: 100%;
+  max-height: 100px; /* Set a max height for the description */
+  overflow: visible; /* Hide overflow by default */
+  transition: max-height 0.3s ease;
+}
+
+.event-description.expanded {
+  max-height: 300px; /* Allow more content to be visible when expanded */
+  overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .no-event {
@@ -92,4 +127,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.read-more-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.read-more-button:hover {
+  background-color: #0056b3;
+}
+
+.read-more-text {
+  color: #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: bottom;
+}
+
+.read-more-text:hover {
+  text-decoration: underline;
 }

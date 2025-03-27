@@ -51,7 +51,15 @@ const CoreTeam = () => {
               ))}
             </ul>
           )}
+         
         </div>
+      
+        <div className="core-team-footer">
+          <div className="core-team-footer-image-container">
+            <h1 className="core-team-footer-title">Our Core Team</h1>
+          </div>
+            <img src="https://res.cloudinary.com/dbroxheos/image/upload/v1743078053/WhatsApp_Image_2025-03-25_at_22.32.00_aa704a3a_t6hbcy.jpg" alt="Core Team Footer" className="core-team-footer-image" />
+          </div>
       </section>
     </>
   );

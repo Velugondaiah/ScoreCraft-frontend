@@ -1,22 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './EventDetails.css';
 
 const EventsDetails = ({ event }) => {
-  if (!event) {
-    return <div className="no-event">No event data available</div>;
-  }
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [status, setStatus] = useState('');
 
-  const calculateTimeRemaining = (eventDate) => {
+  useEffect(() => {
+    const updateStatus = () => {
+      const now = new Date();
+      const eventDateTime = new Date(event.date);
+      const nextDay = new Date(eventDateTime);
+      nextDay.setDate(eventDateTime.getDate() + 1);
+
+      if (now >= nextDay) {
+        setStatus('completed');
+      } else if (now >= eventDateTime && now < nextDay) {
+        setStatus('live');
+      } else {
+        setStatus('upcoming');
+      }
+    };
+
+    updateStatus();
+    const interval = setInterval(updateStatus, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, [event.date]);
+
+  const calculateTimeRemaining = () => {
     const now = new Date();
-    const eventDateTime = new Date(eventDate);
+    const eventDateTime = new Date(event.date);
     const timeDiff = eventDateTime - now;
 
     if (timeDiff < 0) {
-      return <span className="completed">Completed</span>;
-    }
-
-    if (now.toDateString() === eventDateTime.toDateString()) {
-      return <span className="live">Live</span>;
+      return 'Event Completed';
     }
 
     const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
@@ -26,17 +42,36 @@ const EventsDetails = ({ event }) => {
     return `${days}d ${hours}h ${minutes}m remaining`;
   };
 
+  if (!event) {
+    return <div className="no-event">No event data available</div>;
+  }
+
   return (
-    <div className="event-card">
+    <div className={`event-card ${status}`}>
       <div className="event-card-container">
         <div className="event-image-container">
           <img src={event.image} alt={event.heading} className="event-image" />
           <div className="time-remaining">
-            {calculateTimeRemaining(event.date)}
+            {status === 'live' ? (
+              <span className="live-indicator">● Live</span>
+            ) : (
+               calculateTimeRemaining() === 'Event Completed' ? (
+                <span className="time-remaining-text">Event Completed</span>
+              ) : (
+                <span className="remaining-time">{calculateTimeRemaining()}</span>
+              )
+            )}
           </div>
         </div>
-        <h3 className="event-heading">{event.heading}</h3>
-        <p className="event-description">{event.description}</p>
+        {/* <h3 className="event-heading">{event.heading}</h3>
+        <div className="event-description">
+          {isExpanded ? event.description : `${event.description.substring(0, 100)}...`}
+        </div>
+        {event.description.length > 100 && (
+          <span onClick={() => setIsExpanded(!isExpanded)} className="read-more-text">
+            {isExpanded ? 'Read Less' : 'Read More'}
+          </span>
+        )} */}
       </div>
     </div>
   );

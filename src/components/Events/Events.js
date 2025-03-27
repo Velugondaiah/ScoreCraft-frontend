@@ -17,7 +17,11 @@ function Events({ isLoggedIn }) {
       try {
         setLoading(true);
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
-        setEvents(response.data);
+        const sortedEvents = response.data.sort((a, b) => {
+          // Sort by ID in ascending order
+          return a.id - b.id;
+        });
+        setEvents(sortedEvents);
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch events');
@@ -30,18 +34,19 @@ function Events({ isLoggedIn }) {
   }, []);
 
   useEffect(() => {
-    const moveCompletedEvents = async () => {
+    const moveTodaysEvents = async () => {
       try {
-        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/move-completed-events`);
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/move-todays-events`);
         // Refresh the list of events
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events`);
-        setEvents(response.data);
+        const sortedEvents = response.data.sort((a, b) => a.id - b.id); // Keep the sorting consistent
+        setEvents(sortedEvents);
       } catch (err) {
-        console.error('Error moving completed events:', err);
+        console.error('Error moving today\'s events:', err);
       }
     };
 
-    const interval = setInterval(moveCompletedEvents, 60000); // Check every minute
+    const interval = setInterval(moveTodaysEvents, 60000); // Check every minute
     return () => clearInterval(interval);
   }, []);
 

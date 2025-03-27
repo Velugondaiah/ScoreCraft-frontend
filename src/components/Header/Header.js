@@ -92,11 +92,11 @@ function Header({ isLoggedIn, setIsLoggedIn }) {
               Core Team
             </a>
             <a 
-              href="/core-members" 
-              onClick={(e) => handleNavigation('/core-members', e)}
-              className={location.pathname === '/core-members' ? 'active' : ''}
+              href="/mentors" 
+              onClick={(e) => handleNavigation('/mentors', e)}
+              className={location.pathname === '/mentors' ? 'active' : ''}
             >
-              Core Members
+              Mentors
             </a>
           </>
         ) : (

@@ -25,7 +25,8 @@ function App() {
             <Route path="/events" element={<Events isLoggedIn={isLoggedIn} />} />
             <Route path="/upcoming-events" element={<UpcomingEvents isLoggedIn={isLoggedIn} />} />
             <Route path="/core-team" element={<CoreTeam />} />
-            <Route path="/core-members" element={<CoreMembers />} />
+
+            <Route path="/mentors" element={<Mentors />} />
             <Route path="*" element={<Navigate to="/events" />} />
           </>
         ) : (

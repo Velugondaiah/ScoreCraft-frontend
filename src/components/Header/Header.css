@@ -1,13 +1,17 @@
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background: linear-gradient(to right, #1a1a2e, #16213e);
   color: white;
-  position: relative;
-  z-index: 2;
+  z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
 }
 
 .logo {

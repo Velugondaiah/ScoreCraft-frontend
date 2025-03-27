@@ -58,6 +58,15 @@ function UpcomingEvents({ isLoggedIn }) {
 
   const handleAddEvent = async (e) => {
     e.preventDefault();
+    const eventDate = new Date(newEvent.date);
+    const now = new Date();
+
+    // Compare only the date part
+    if (eventDate.setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)) {
+      alert('You cannot add an event with a past date. Please select a future date.');
+      return;
+    }
+
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upcoming-events`, newEvent);
       setUpcomingEvents([...upcomingEvents, newEvent]);

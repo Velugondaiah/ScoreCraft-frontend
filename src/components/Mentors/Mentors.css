@@ -12,7 +12,10 @@
     background: linear-gradient(to bottom, #1a1a2e, #16213e);
     color: white;
   }
-  
+  .mentors-page{
+    margin-top: 100px;
+   
+  }
   .core-team-container {
     max-width: 1200px;
     margin: 0 auto;
